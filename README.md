@@ -127,16 +127,20 @@ docker pull ghcr.io/duyhenryer/log-generator:latest
 
 ### Build Image
 ```bash
-docker build -t log-generator .
+# Development build
+docker build --target development -t log-generator:dev .
+
+# Production build
+docker build --target production -t log-generator:prod .
 ```
 
 ### Run Container
 ```bash
-# Basic usage
+# Basic usage (production)
 docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 1 --count 10
 
-# Generate logs to stdout
-docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 0.1 --count 1000
+# Development mode
+docker run --rm log-generator:dev --sleep 0.5 --count 100
 
 # JSON format
 docker run --rm ghcr.io/duyhenryer/log-generator:latest --format json --sleep 0.5 --count 100
@@ -167,28 +171,3 @@ make lint    # Lint with ruff + mypy
 ```bash
 make examples
 ```
-
-## Performance
-
-- **Single Process**: Up to 10,000+ logs/second
-- **Memory Usage**: ~10MB for typical usage
-- **CPU Usage**: Low, optimized for sustained generation
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Run `make test` and `make lint`
-6. Submit a pull request
-
-## License
-
-This project is licensed under the Apache-2.0 License - see the LICENSE file for details.
-
-## Support
-
-- 📧 Email: hello@duyne.me
-- 🐛 Issues: [GitHub Issues](https://github.com/duyhenryer/log-generator/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/duyhenryer/log-generator/discussions)

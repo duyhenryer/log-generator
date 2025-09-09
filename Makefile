@@ -26,8 +26,14 @@ examples:  ## Run examples
 	@echo "\nJSON logs:"
 	log-generator --format json --sleep 0.5 --count 3
 
-docker-build:  ## Build Docker image
-	docker build -t log-generator .
+docker-build:  ## Build Docker image (production)
+	docker build --target production -t log-generator:prod .
 
-docker-run:  ## Run Docker container
-	docker run --rm log-generator --sleep 1 --count 5
+docker-build-dev:  ## Build Docker image (development)
+	docker build --target development -t log-generator:dev .
+
+docker-run:  ## Run Docker container (production)
+	docker run --rm log-generator:prod --sleep 1 --count 5
+
+docker-run-dev:  ## Run Docker container (development)
+	docker run --rm log-generator:dev --sleep 1 --count 5
