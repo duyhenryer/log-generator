@@ -3,7 +3,16 @@
 
 import json
 import pytest
-from loggen.main import generate_log_entry, pick_error_level, pick_status_code
+from loggen.main import (
+    generate_log_entry,
+    pick_error_level,
+    pick_status_code,
+    random_ip,
+    random_time,
+    random_request,
+    random_bytes,
+    random_request_time,
+)
 
 
 class TestLoggen:
@@ -86,6 +95,41 @@ class TestLoggen:
         
         # Request time should be at least 1.0 (base latency) + 0.2 (minimum random)
         assert parsed['request_time'] >= 1.2
+    
+    def test_random_ip(self):
+        """Test IP generation."""
+        ip = random_ip()
+        parts = ip.split('.')
+        assert len(parts) == 4
+        for part in parts:
+            assert 1 <= int(part) <= 255
+    
+    def test_random_time(self):
+        """Test time generation."""
+        time_str = random_time()
+        assert isinstance(time_str, str)
+        assert '+0000' in time_str
+        assert '/' in time_str and ':' in time_str
+    
+    def test_random_request(self):
+        """Test HTTP request generation."""
+        request = random_request()
+        assert isinstance(request, str)
+        methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+        assert any(method in request for method in methods)
+        assert 'HTTP/' in request
+    
+    def test_random_bytes(self):
+        """Test bytes generation."""
+        bytes_val = random_bytes()
+        assert isinstance(bytes_val, int)
+        assert 100 <= bytes_val <= 5000
+    
+    def test_random_request_time(self):
+        """Test request time generation."""
+        req_time = random_request_time()
+        assert isinstance(req_time, float)
+        assert 0.2 <= req_time <= 1.5
 
 
 if __name__ == '__main__':

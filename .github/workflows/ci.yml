@@ -57,7 +57,7 @@ jobs:
       - name: Run tests with pytest
         run: |
           source .venv/bin/activate
-          pytest --cov=loggen --cov-report=xml
+          pytest
 
       - name: Security check with bandit
         run: |
