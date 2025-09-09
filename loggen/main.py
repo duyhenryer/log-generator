@@ -38,7 +38,12 @@ USER_AGENTS = [
     "curl/7.68.0",
     "PostmanRuntime/7.28.4",
 ]
-REFERERS = ["-", "https://google.com/search?q=loggen", "https://github.com/", "https://example.com/"]
+REFERERS = [
+    "-",
+    "https://google.com/search?q=loggen",
+    "https://github.com/",
+    "https://example.com/",
+]
 COUNTRY_CODES = ["US", "FR", "DE", "IN", "CN", "BR", "GB", "RU", "JP", "AU"]
 
 # HTTP status code pools
@@ -59,7 +64,7 @@ def random_time():
     now = datetime.now()
     offset = -secrets.randbelow(60 * 60 * 24 * 30 + 1)
     dt = now + timedelta(seconds=offset)
-    return dt.strftime("%d/%b/%Y:%H:%M:%S ")
+    return dt.strftime("%d/%b/%Y:%H:%M:%S +0000")
 
 
 def random_request():
@@ -87,7 +92,7 @@ def pick_error_level(error_rate):
         return "client_error"
     elif r < error_rate:
         return "server_error"
-    else:
+        else:
         return "ok"
 
 
