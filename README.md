@@ -1,1 +1,194 @@
-# log-generator
+# Log Generator
+
+![CI](https://github.com/duyhenryer/log-generator/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/duyhenryer/log-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/duyhenryer/log-generator)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+
+A configurable log generator for testing and benchmarking log pipelines. It generates random logs in webserver-style format, making it ideal for demos and testing with logging solutions such as Loki, VictoriaLogs, and more.
+
+## Features
+
+- 🚀 **High Performance**: Generate thousands of logs per second
+- 🎯 **Realistic Data**: Weighted error rates, realistic IPs, user agents
+- 💻 **Simple CLI**: Clean command-line interface with Click
+- 🐳 **Docker Ready**: Containerized deployment
+- ⚡ **Rate Control**: Sleep-based timing control
+- 🔒 **Secure Random**: Uses `secrets` module for cryptographically secure randomness
+
+## Prerequisites
+
+- **Python** `>=3.11,<3.14`
+- **uv** `>=0.5.0` (recommended) or pip
+
+## Installation
+
+### Using uv (Recommended)
+```bash
+git clone https://github.com/duyhenryer/log-generator.git
+cd log-generator
+
+# Create virtual environment and install
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install --editable .
+```
+
+### Using pip
+```bash
+git clone https://github.com/duyhenryer/log-generator.git
+cd log-generator
+pip install -e .
+```
+
+### Using pip (when published)
+```bash
+pip install log-generator
+```
+
+## Quick Start
+
+### Basic Usage
+```bash
+# Generate webserver logs (default - infinite)
+log-generator --sleep 0.5 --error-rate 0.2
+
+# Generate JSON logs
+log-generator --format json --sleep 1 --count 100
+
+# High-rate generation for stress testing
+log-generator --sleep 0.1 --count 10000
+
+# Add latency simulation
+log-generator --sleep 1 --latency 0.5 --error-rate 0.3
+```
+
+### Example Output
+
+**Raw Format:**
+```
+192.168.1.45 - [09/Sep/2025:14:30:15 ] "GET /api/users HTTP/2" 200 1247 "https://github.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" "US" 0.845
+10.0.0.123 - [09/Sep/2025:14:30:16 ] "POST /api/orders HTTP/1.1" 201 856 "-" "curl/7.68.0" "CN" 1.234
+```
+
+**JSON Format:**
+```json
+{"remote_addr": "192.168.1.45", "remote_user": "-", "time_local": "09/Sep/2025:14:30:15 ", "request": "GET /api/users HTTP/2", "status": 200, "body_bytes_sent": 1247, "http_referer": "https://github.com/", "http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", "country": "US", "request_time": 0.845}
+```
+
+## Configuration
+
+### Command Line Options
+```bash
+log-generator --help
+
+Options:
+  --sleep FLOAT          Seconds to sleep between logs (default: 0)
+  --error-rate FLOAT     Fraction of logs that are errors (default: 0.1)
+  --format [raw|json]    Log output format (default: raw)
+  --count INTEGER        Number of logs to generate (default: 0 for infinite)
+  --latency FLOAT        Additional latency in seconds (default: 0.0)
+  --help                 Show this message and exit
+```
+
+## Use Cases
+
+### 1. Testing Loki/Grafana
+```bash
+# Generate logs and pipe to Promtail
+log-generator --sleep 0.01 | promtail --config.file=promtail.yaml
+```
+
+### 2. VictoriaLogs Testing
+```bash
+# Generate JSON logs for VictoriaLogs
+log-generator --format json --sleep 0.005 > /var/log/app.log
+```
+
+### 3. Load Testing
+```bash
+# High-rate generation for stress testing
+log-generator --sleep 0.001 --count 100000 > stress_test.log
+```
+
+### 4. Demo Data
+```bash
+# Generate sample data for demos
+log-generator --sleep 1 --count 500 --error-rate 0.3
+```
+
+## Docker Usage
+
+### Pre-built Image
+```bash
+# Pull from GitHub Container Registry
+docker pull ghcr.io/duyhenryer/log-generator:latest
+```
+
+### Build Image
+```bash
+docker build -t log-generator .
+```
+
+### Run Container
+```bash
+# Basic usage
+docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 1 --count 10
+
+# Generate logs to stdout
+docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 0.1 --count 1000
+
+# JSON format
+docker run --rm ghcr.io/duyhenryer/log-generator:latest --format json --sleep 0.5 --count 100
+
+# High-rate generation
+docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 0.01 --error-rate 0.3
+```
+
+## Development
+
+### Setup Development Environment
+```bash
+make install
+```
+
+### Run Tests
+```bash
+make test
+```
+
+### Code Quality
+```bash
+make format  # Format with ruff
+make lint    # Lint with ruff + mypy
+```
+
+### Examples
+```bash
+make examples
+```
+
+## Performance
+
+- **Single Process**: Up to 10,000+ logs/second
+- **Memory Usage**: ~10MB for typical usage
+- **CPU Usage**: Low, optimized for sustained generation
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Run `make test` and `make lint`
+6. Submit a pull request
+
+## License
+
+This project is licensed under the Apache-2.0 License - see the LICENSE file for details.
+
+## Support
+
+- 📧 Email: hello@duyne.me
+- 🐛 Issues: [GitHub Issues](https://github.com/duyhenryer/log-generator/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/duyhenryer/log-generator/discussions)
