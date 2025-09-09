@@ -92,7 +92,7 @@ def pick_error_level(error_rate):
         return "client_error"
     elif r < error_rate:
         return "server_error"
-    else:
+        else:
         return "ok"
 
 
