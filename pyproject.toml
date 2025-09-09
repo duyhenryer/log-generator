@@ -33,6 +33,8 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 88
+
+[tool.ruff.lint]
 select = ["E", "F", "W", "C90", "I"]
 
 [tool.mypy]

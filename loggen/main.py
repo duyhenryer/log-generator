@@ -15,11 +15,26 @@ import click
 
 # Sample data for random generation
 HTTP_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
-HTTP_PATHS = ["/", "/api/users", "/api/orders", "/login", "/logout", "/products", "/health", "/metrics"]
+HTTP_PATHS = [
+    "/",
+    "/api/users",
+    "/api/orders",
+    "/login",
+    "/logout",
+    "/products",
+    "/health",
+    "/metrics",
+]
 HTTP_VERSIONS = ["HTTP/1.1", "HTTP/2"]
 USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
+    (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 "
+        "(KHTML, like Gecko) Version/15.1 Safari/605.1.15"
+    ),
     "curl/7.68.0",
     "PostmanRuntime/7.28.4",
 ]

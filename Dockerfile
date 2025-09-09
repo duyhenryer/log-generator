@@ -17,7 +17,7 @@ COPY loggen/ ./loggen/
 
 # Install dependencies and the package
 RUN uv venv /opt/venv && \
-    /opt/venv/bin/pip install --no-cache-dir -e .
+    uv pip install --python /opt/venv/bin/python --no-cache-dir -e .
 
 # Create non-root user
 RUN groupadd -r loggen && useradd -r -g loggen -s /bin/false loggen
