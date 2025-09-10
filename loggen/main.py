@@ -38,7 +38,12 @@ USER_AGENTS = [
     "curl/7.68.0",
     "PostmanRuntime/7.28.4",
 ]
-REFERERS = ["-", "https://google.com/search?q=loggen", "https://github.com/", "https://example.com/"]
+REFERERS = [
+    "-",
+    "https://google.com/search?q=loggen",
+    "https://github.com/",
+    "https://example.com/",
+]
 COUNTRY_CODES = ["US", "FR", "DE", "IN", "CN", "BR", "GB", "RU", "JP", "AU"]
 
 # HTTP status code pools
@@ -112,9 +117,9 @@ def generate_log_entry(error_rate, output_format, latency=0.0):
 
     if output_format == "raw":
         return (
-            f"{remote_addr} {remote_user} [{time_local}] \"{request}\" "
-            f"{status} {body_bytes_sent} \"{http_referer}\" "
-            f"\"{http_user_agent}\" \"{country}\" {request_time}"
+            f'{remote_addr} {remote_user} [{time_local}] "{request}" '
+            f'{status} {body_bytes_sent} "{http_referer}" '
+            f'"{http_user_agent}" "{country}" {request_time}'
         )
     else:  # json
         log_dict = {
