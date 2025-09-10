@@ -127,16 +127,20 @@ docker pull ghcr.io/duyhenryer/log-generator:latest
 
 ### Build Image
 ```bash
-docker build -t log-generator .
+# Development build
+docker build --target development -t log-generator:dev .
+
+# Production build
+docker build --target production -t log-generator:prod .
 ```
 
 ### Run Container
 ```bash
-# Basic usage
+# Basic usage (production)
 docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 1 --count 10
 
-# Generate logs to stdout
-docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 0.1 --count 1000
+# Development mode
+docker run --rm log-generator:dev --sleep 0.5 --count 100
 
 # JSON format
 docker run --rm ghcr.io/duyhenryer/log-generator:latest --format json --sleep 0.5 --count 100
@@ -149,46 +153,49 @@ docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 0.01 --error-rat
 
 ### Setup Development Environment
 ```bash
+# Install package with dev dependencies
 make install
+
+# Or manually with uv
+uv venv
+source .venv/bin/activate
+uv pip install --editable ".[dev,test]"
 ```
 
-### Run Tests
+### Available Make Commands
 ```bash
-make test
+# Show all available commands
+make help
+
+# Development workflow
+make install    # Install package with dev/test dependencies
+make test       # Run tests with pytest
+make lint       # Run linting (ruff + mypy)
+make format     # Format code with ruff
+make clean      # Clean up build artifacts and cache
+make examples   # Run sample log generation examples
+
+# Docker commands
+make docker-build      # Build production Docker image
+make docker-build-dev  # Build development Docker image
+make docker-run        # Run production container
+make docker-run-dev    # Run development container
 ```
 
 ### Code Quality
 ```bash
-make format  # Format with ruff
-make lint    # Lint with ruff + mypy
+# Format code
+make format
+
+# Run linting and type checking
+make lint
+
+# Run tests with coverage
+make test
 ```
 
 ### Examples
 ```bash
+# Generate sample logs
 make examples
 ```
-
-## Performance
-
-- **Single Process**: Up to 10,000+ logs/second
-- **Memory Usage**: ~10MB for typical usage
-- **CPU Usage**: Low, optimized for sustained generation
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Run `make test` and `make lint`
-6. Submit a pull request
-
-## License
-
-This project is licensed under the Apache-2.0 License - see the LICENSE file for details.
-
-## Support
-
-- 📧 Email: hello@duyne.me
-- 🐛 Issues: [GitHub Issues](https://github.com/duyhenryer/log-generator/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/duyhenryer/log-generator/discussions)
