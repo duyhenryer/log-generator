@@ -1,36 +1,32 @@
-FROM python:3.11-slim
+# syntax=docker/dockerfile:1
+
+# ---- Base image ----
+FROM python:3.11-slim AS base
 
 LABEL org.opencontainers.image.title="log-generator"
 LABEL org.opencontainers.image.description="A continuous log generator for testing and benchmarking log pipelines"
 LABEL org.opencontainers.image.vendor="duyhenryer"
+LABEL org.opencontainers.image.authors="Duy nè <hello@duyne.me>"
 LABEL org.opencontainers.image.source="https://github.com/duyhenryer/log-generator"
 
-# Set working directory
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install uv for faster dependency management
-RUN pip install --no-cache-dir uv
+# ---- Development image ----
+FROM base AS development
+RUN pip install --upgrade pip && pip install uv
+COPY . .
+RUN uv venv
+RUN . .venv/bin/activate && uv pip install --editable ".[dev,test]"
+USER 10001:10001
+CMD [".venv/bin/log-generator"]
 
-# Copy project files
-COPY pyproject.toml ./
+# ---- Production image ----
+FROM base AS production
+RUN pip install --upgrade pip && pip install uv
 COPY loggen/ ./loggen/
-
-# Install dependencies and the package
-RUN uv venv /opt/venv && \
-    uv pip install --python /opt/venv/bin/python --no-cache-dir -e .
-
-# Create non-root user
-RUN groupadd -r loggen && useradd -r -g loggen -s /bin/false loggen
-RUN chown -R loggen:loggen /app /opt/venv
-USER loggen
-
-# Use virtual environment
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD log-generator --count 1 --format json > /dev/null || exit 1
-
-# Set default command
+COPY pyproject.toml ./
+RUN uv pip install --system .
+USER 10001:10001
 ENTRYPOINT ["log-generator"]
-CMD ["--help"]
