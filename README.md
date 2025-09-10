@@ -117,38 +117,6 @@ log-generator --sleep 0.001 --count 100000 > stress_test.log
 log-generator --sleep 1 --count 500 --error-rate 0.3
 ```
 
-## Docker Usage
-
-### Pre-built Image
-```bash
-# Pull from GitHub Container Registry
-docker pull ghcr.io/duyhenryer/log-generator:latest
-```
-
-### Build Image
-```bash
-# Development build
-docker build --target development -t log-generator:dev .
-
-# Production build
-docker build --target production -t log-generator:prod .
-```
-
-### Run Container
-```bash
-# Basic usage (production)
-docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 1 --count 10
-
-# Development mode
-docker run --rm log-generator:dev --sleep 0.5 --count 100
-
-# JSON format
-docker run --rm ghcr.io/duyhenryer/log-generator:latest --format json --sleep 0.5 --count 100
-
-# High-rate generation
-docker run --rm ghcr.io/duyhenryer/log-generator:latest --sleep 0.01 --error-rate 0.3
-```
-
 ## Development
 
 ### Setup Development Environment
