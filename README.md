@@ -1,7 +1,6 @@
 # Log Generator
 
 ![CI](https://github.com/duyhenryer/log-generator/workflows/CI/badge.svg)
-[![codecov](https://codecov.io/gh/duyhenryer/log-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/duyhenryer/log-generator)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 
@@ -25,6 +24,10 @@ A configurable log generator for testing and benchmarking log pipelines. It gene
 
 ### Using uv (Recommended)
 ```bash
+# Install uv 
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# clone repo
 git clone https://github.com/duyhenryer/log-generator.git
 cd log-generator
 
@@ -148,22 +151,4 @@ make docker-build      # Build production Docker image
 make docker-build-dev  # Build development Docker image
 make docker-run        # Run production container
 make docker-run-dev    # Run development container
-```
-
-### Code Quality
-```bash
-# Format code
-make format
-
-# Run linting and type checking
-make lint
-
-# Run tests with coverage
-make test
-```
-
-### Examples
-```bash
-# Generate sample logs
-make examples
 ```
