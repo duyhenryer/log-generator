@@ -16,6 +16,7 @@ RUN pip install --upgrade pip && pip install uv
 
 # ---- Development image ----
 FROM base AS development
+COPY . .
 RUN uv venv
 RUN . .venv/bin/activate && uv pip install --editable ".[dev,test]"
 USER 10001:10001
