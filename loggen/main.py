@@ -37,6 +37,10 @@ USER_AGENTS = [
     ),
     "curl/7.68.0",
     "PostmanRuntime/7.28.4",
+    (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ),
 ]
 REFERERS = [
     "-",
@@ -44,7 +48,7 @@ REFERERS = [
     "https://github.com/",
     "https://example.com/",
 ]
-COUNTRY_CODES = ["US", "FR", "DE", "IN", "CN", "BR", "GB", "RU", "JP", "AU"]
+COUNTRY_CODES = ["US", "FR", "DE", "IN", "CN", "BR", "GB", "RU", "JP", "AU", "VN"]
 
 # HTTP status code pools
 HTTP_CODES = {

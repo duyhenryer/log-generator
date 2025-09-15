@@ -12,11 +12,10 @@ LABEL org.opencontainers.image.source="https://github.com/duyhenryer/log-generat
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+RUN pip install --upgrade pip && pip install uv
 
 # ---- Development image ----
 FROM base AS development
-RUN pip install --upgrade pip && pip install uv
-COPY . .
 RUN uv venv
 RUN . .venv/bin/activate && uv pip install --editable ".[dev,test]"
 USER 10001:10001
@@ -24,9 +23,8 @@ CMD [".venv/bin/log-generator"]
 
 # ---- Production image ----
 FROM base AS production
-RUN pip install --upgrade pip && pip install uv
-COPY loggen/ ./loggen/
 COPY pyproject.toml ./
+COPY loggen/ ./loggen/
 RUN uv pip install --system .
 USER 10001:10001
 ENTRYPOINT ["log-generator"]

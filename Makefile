@@ -36,4 +36,4 @@ docker-run:  ## Run Docker container (production)
 	docker run --rm log-generator:prod --sleep 1 --count 5
 
 docker-run-dev:  ## Run Docker container (development)
-	docker run --rm log-generator:dev --sleep 1 --count 5
+	docker run --rm log-generator:dev .venv/bin/log-generator --sleep 1 --count 5

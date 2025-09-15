@@ -148,7 +148,7 @@ make examples   # Run sample log generation examples
 
 # Docker commands
 make docker-build      # Build production Docker image
-make docker-build-dev  # Build development Docker image
 make docker-run        # Run production container
+make docker-build-dev  # Build development Docker image
 make docker-run-dev    # Run development container
 ```
