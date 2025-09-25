@@ -18,7 +18,7 @@ A configurable log generator for testing and benchmarking log pipelines. It gene
 ## Prerequisites
 
 - **Python** `>=3.11,<3.14`
-- **uv** `>=0.5.0` (recommended) or pip
+- **uv** `>=0.5.0` (recommended)
 
 ## Installation
 
@@ -36,19 +36,6 @@ uv venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install --editable .
 ```
-
-### Using pip
-```bash
-git clone https://github.com/duyhenryer/log-generator.git
-cd log-generator
-pip install -e .
-```
-
-### Using pip (when published)
-```bash
-pip install log-generator
-```
-
 ## Quick Start
 
 ### Basic Usage
@@ -151,4 +138,37 @@ make docker-build      # Build production Docker image
 make docker-run        # Run production container
 make docker-build-dev  # Build development Docker image
 make docker-run-dev    # Run development container
+```
+
+## Deployment with Helm Chart
+
+You can deploy Log Generator using the Helm chart. This is the recommended way to run in Kubernetes environments.
+
+### Prerequisites
+- [Helm](https://helm.sh/) installed.
+- Source Helm charts are published at: [duyhenryer/charts](https://github.com/duyhenryer/charts)
+
+### Install with Helm
+```bash
+helm install log-generator duyhenryer/log-generator
+```
+
+This will deploy Log Generator with default settings. You can customize values using the `--set` flag or a custom values file:
+```bash
+helm install log-generator duyhenryer/log-generator \
+  --set sleep=0.5,errorRate=0.2,format=json
+```
+
+For more configuration options, refer to the chart documentation or use:
+```bash
+helm show values duyhenryer/log-generator
+```
+
+### Upgrade or Uninstall
+```bash
+# Upgrade release
+helm upgrade log-generator duyhenryer/log-generator
+
+# Uninstall release
+helm uninstall log-generator
 ```
