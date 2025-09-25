@@ -81,32 +81,6 @@ Options:
   --help                 Show this message and exit
 ```
 
-## Use Cases
-
-### 1. Testing Loki/Grafana
-```bash
-# Generate logs and pipe to Promtail
-log-generator --sleep 0.01 | promtail --config.file=promtail.yaml
-```
-
-### 2. VictoriaLogs Testing
-```bash
-# Generate JSON logs for VictoriaLogs
-log-generator --format json --sleep 0.005 > /var/log/app.log
-```
-
-### 3. Load Testing
-```bash
-# High-rate generation for stress testing
-log-generator --sleep 0.001 --count 100000 > stress_test.log
-```
-
-### 4. Demo Data
-```bash
-# Generate sample data for demos
-log-generator --sleep 1 --count 500 --error-rate 0.3
-```
-
 ## Development
 
 ### Setup Development Environment
@@ -120,7 +94,7 @@ source .venv/bin/activate
 uv pip install --editable ".[dev,test]"
 ```
 
-### Available Make Commands
+### Make Commands
 ```bash
 # Show all available commands
 make help

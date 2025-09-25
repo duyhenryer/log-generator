@@ -12,6 +12,8 @@ import time
 from datetime import datetime, timedelta
 
 import click
+from loggen.metrics import start_metrics_server, update_metrics
+import os
 
 # Sample data for random generation
 HTTP_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"]
@@ -119,6 +121,9 @@ def generate_log_entry(error_rate, output_format, latency=0.0):
     country = secrets.choice(COUNTRY_CODES)
     request_time = round(random_request_time() + latency, 3)
 
+    # Metrics update
+    update_metrics(error_level, request_time)
+
     if output_format == "raw":
         return (
             f'{remote_addr} {remote_user} [{time_local}] "{request}" '
@@ -174,7 +179,8 @@ def generate_log_entry(error_rate, output_format, latency=0.0):
     help="Additional latency (in seconds) to add to request_time (default: 0)",
 )
 def main(sleep, error_rate, output_format, count, latency):
-    """Continuous log generator."""
+    # Start metrics server in background
+    start_metrics_server()
     try:
         i = 0
         while count == 0 or i < count:
