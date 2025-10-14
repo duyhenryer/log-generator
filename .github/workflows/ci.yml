@@ -23,49 +23,31 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install uv
-        run: pip install uv
-
-      - name: Set up cache for uv
-        uses: actions/cache@v4
+        uses: astral-sh/setup-uv@v5
         with:
-          path: .venv
-          key: ${{ runner.os }}-python${{ matrix.python-version }}-uv-${{ hashFiles('pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-python${{ matrix.python-version }}-uv-
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
 
       - name: Install dependencies
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install --editable ".[dev,test]"
+        run: uv sync --extra dev --extra test
 
       - name: Lint with ruff
-        run: |
-          source .venv/bin/activate
-          ruff check loggen/
+        run: uv run ruff check loggen/
 
       - name: Format check with ruff
-        run: |
-          source .venv/bin/activate
-          ruff format --check loggen/
+        run: uv run ruff format --check loggen/
 
       - name: Type check with mypy
-        run: |
-          source .venv/bin/activate
-          mypy loggen/
+        run: uv run mypy loggen/
 
       - name: Run tests with pytest
-        run: |
-          source .venv/bin/activate
-          pytest --cov=loggen --cov-report=xml
+        run: uv run pytest --cov=loggen --cov-report=xml
 
       - name: Security check with bandit
-        run: |
-          source .venv/bin/activate
-          bandit -r loggen/
+        run: uv run bandit -r loggen/
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.11'
+        if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:
           file: ./coverage.xml
