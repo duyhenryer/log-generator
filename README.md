@@ -18,24 +18,8 @@ A configurable log generator for testing and benchmarking log pipelines. It gene
 ## Prerequisites
 
 - **Python** `>=3.11,<3.14`
-- **uv** `>=0.5.0` (recommended)
+- **uv** `>=0.5.0` (recommended for development)
 
-## Installation
-
-### Using uv (Recommended)
-```bash
-# Install uv 
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# clone repo
-git clone https://github.com/duyhenryer/log-generator.git
-cd log-generator
-
-# Create virtual environment and install
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install --editable .
-```
 ## Quick Start
 
 ### Basic Usage
@@ -107,17 +91,25 @@ log-generator --sleep 0.001 --count 100000 > stress_test.log
 log-generator --sleep 1 --count 500 --error-rate 0.3
 ```
 
-## Development
+## Installation & Development
 
-### Setup Development Environment
+### Quick Setup (Recommended)
+
+Using `uv` for the best experience:
+
 ```bash
-# Install package with dev dependencies
-make install
+# Install uv if you haven't
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Or manually with uv
-uv venv
-source .venv/bin/activate
-uv pip install --editable ".[dev,test]"
+# Clone the repository
+git clone https://github.com/duyhenryer/log-generator.git
+cd log-generator
+
+# Install with development dependencies (creates venv automatically)
+uv sync --extra dev --extra test
+
+# The tool is now available as 'log-generator'
+uv run log-generator --help
 ```
 
 ### Available Make Commands
@@ -125,13 +117,16 @@ uv pip install --editable ".[dev,test]"
 # Show all available commands
 make help
 
+# Installation
+make install       # Install production (minimal dependencies)
+make install-dev   # Install with dev/test dependencies
+
 # Development workflow
-make install    # Install package with dev/test dependencies
-make test       # Run tests with pytest
-make lint       # Run linting (ruff + mypy)
-make format     # Format code with ruff
-make clean      # Clean up build artifacts and cache
-make examples   # Run sample log generation examples
+make test          # Run tests with pytest
+make lint          # Run linting (ruff + mypy)
+make format        # Format code with ruff
+make clean         # Clean up build artifacts and cache
+make examples      # Run sample log generation examples
 
 # Docker commands
 make docker-build      # Build production Docker image
