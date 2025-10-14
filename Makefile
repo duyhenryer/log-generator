@@ -1,10 +1,13 @@
-.PHONY: help install test lint format clean examples docker-build docker-build-dev docker-run docker-run-dev
+.PHONY: help install-dev install test lint format clean examples docker-build docker-build-dev docker-run docker-run-dev
 
 help:  ## Show help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-10s %s\n", $$1, $$2}'
 
-install:  ## Install package
-	uv pip install --editable ".[dev,test]"
+install-dev:  ## Install package with dev/test dependencies
+	uv sync --extra dev --extra test
+
+install:  ## Install package (production)
+	uv sync
 
 test:  ## Run tests
 	pytest
@@ -18,13 +21,7 @@ format:  ## Format code
 
 clean:  ## Clean up
 	rm -rf build/ dist/ *.egg-info/
-	find . -name __pycache__ -delete
-
-examples:  ## Run examples
-	@echo "Raw logs:"
-	log-generator --sleep 0.5 --count 3
-	@echo "\nJSON logs:"
-	log-generator --format json --sleep 0.5 --count 3
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 
 docker-build:  ## Build Docker image (production)
 	docker build --target production -t log-generator:prod .
@@ -36,4 +33,10 @@ docker-run:  ## Run Docker container (production)
 	docker run --rm log-generator:prod --sleep 1 --count 5
 
 docker-run-dev:  ## Run Docker container (development)
-	docker run --rm log-generator:dev .venv/bin/log-generator --sleep 1 --count 5
+	docker run --rm log-generator:dev --sleep 1 --count 5
+
+examples:  ## Run examples
+	@echo "Raw logs:"
+	uv run log-generator --sleep 0.5 --count 3
+	@echo "\nJSON logs:"
+	uv run log-generator --format json --sleep 0.5 --count 3

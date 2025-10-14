@@ -1,10 +1,12 @@
 # syntax=docker/dockerfile:1
 
-# ---- Base image ----
-FROM python:3.11-slim AS base
+ARG PYTHON_VERSION=3.11
 
-LABEL org.opencontainers.image.title="log-generator"
-LABEL org.opencontainers.image.description="A continuous log generator for testing and benchmarking log pipelines"
+# ---- Development image ----
+FROM ghcr.io/duyhenryer/wolfi-images/python:${PYTHON_VERSION}-dev AS development
+
+LABEL org.opencontainers.image.title="log-generator-dev"
+LABEL org.opencontainers.image.description="Log generator with development tools"
 LABEL org.opencontainers.image.vendor="duyhenryer"
 LABEL org.opencontainers.image.authors="Duy nè <hello@duyne.me>"
 LABEL org.opencontainers.image.source="https://github.com/duyhenryer/log-generator"
@@ -12,20 +14,39 @@ LABEL org.opencontainers.image.source="https://github.com/duyhenryer/log-generat
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-RUN pip install --upgrade pip && pip install uv
 
-# ---- Development image ----
-FROM base AS development
 COPY . .
-RUN uv venv
-RUN . .venv/bin/activate && uv pip install --editable ".[dev,test]"
+RUN uv sync --extra dev --extra test && \
+    uv pip install --editable .
 USER 10001:10001
-CMD [".venv/bin/log-generator"]
+ENTRYPOINT ["/app/.venv/bin/log-generator"]
 
-# ---- Production image ----
-FROM base AS production
+# ---- Builder stage (install to system) ----
+FROM ghcr.io/duyhenryer/wolfi-images/python:${PYTHON_VERSION}-dev AS builder
+
+ARG PYTHON_VERSION
+WORKDIR /app
 COPY pyproject.toml ./
 COPY loggen/ ./loggen/
-RUN uv pip install --system .
+RUN uv pip install --system --no-cache .
+
+# ---- Production image (minimal, distroless) ----
+FROM ghcr.io/duyhenryer/wolfi-images/python:${PYTHON_VERSION} AS production
+
+ARG PYTHON_VERSION
+LABEL org.opencontainers.image.title="log-generator"
+LABEL org.opencontainers.image.description="Log generator for testing and benchmarking log pipelines"
+LABEL org.opencontainers.image.vendor="duyhenryer"
+LABEL org.opencontainers.image.authors="Duy nè <hello@duyne.me>"
+LABEL org.opencontainers.image.source="https://github.com/duyhenryer/log-generator"
+
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Copy installed packages from builder
+COPY --from=builder /usr/lib/python${PYTHON_VERSION}/site-packages /usr/lib/python${PYTHON_VERSION}/site-packages
+COPY --from=builder /usr/bin/log-generator /usr/bin/log-generator
+
 USER 10001:10001
 ENTRYPOINT ["log-generator"]
