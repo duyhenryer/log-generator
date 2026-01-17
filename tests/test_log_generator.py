@@ -41,9 +41,9 @@ class TestLoggen:
         parsed = json.loads(log_entry)
         assert isinstance(parsed, dict)
         
-        # Check for expected fields
+        # Check for expected fields including message for VictoriaLogs
         expected_fields = [
-            'remote_addr', 'remote_user', 'time_local', 'request',
+            'message', 'remote_addr', 'remote_user', 'time_local', 'request',
             'status', 'body_bytes_sent', 'http_referer', 
             'http_user_agent', 'country', 'request_time'
         ]
@@ -54,6 +54,13 @@ class TestLoggen:
         assert isinstance(parsed['status'], int)
         assert isinstance(parsed['body_bytes_sent'], int)
         assert isinstance(parsed['request_time'], float)
+        assert isinstance(parsed['message'], str)
+        
+        # Verify message field contains expected log components
+        message = parsed['message']
+        assert parsed['remote_addr'] in message
+        assert str(parsed['status']) in message
+        assert parsed['country'] in message
     
     def test_pick_error_level(self):
         """Test error level selection."""
