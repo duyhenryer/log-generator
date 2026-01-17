@@ -126,14 +126,14 @@ def generate_log_entry(error_rate, output_format, latency=0.0):
             f'"{http_user_agent}" "{country}" {request_time}'
         )
     else:  # json
-        # Create the raw log message for VictoriaLogs compatibility
+        # Create the raw log message for VictoriaLogs _msg field
         raw_message = (
             f'{remote_addr} {remote_user} [{time_local}] "{request}" '
             f'{status} {body_bytes_sent} "{http_referer}" '
             f'"{http_user_agent}" "{country}" {request_time}'
         )
         log_dict = {
-            "message": raw_message,  # Add message field for VictoriaLogs
+            "_msg": raw_message,  # VictoriaLogs standard _msg field
             "remote_addr": remote_addr,
             "remote_user": remote_user,
             "time_local": time_local,
