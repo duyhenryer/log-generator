@@ -9,7 +9,7 @@ import random
 import secrets
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import click
 
@@ -65,10 +65,10 @@ def random_ip():
 
 def random_time():
     """Generate random time in the last 30 days."""
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     offset = -secrets.randbelow(60 * 60 * 24 * 30 + 1)
     dt = now + timedelta(seconds=offset)
-    return dt.strftime("%d/%b/%Y:%H:%M:%S ")
+    return dt.strftime("%d/%b/%Y:%H:%M:%S %z")
 
 
 def random_request():
@@ -126,7 +126,14 @@ def generate_log_entry(error_rate, output_format, latency=0.0):
             f'"{http_user_agent}" "{country}" {request_time}'
         )
     else:  # json
+        # Create the raw log message for VictoriaLogs _msg field
+        raw_message = (
+            f'{remote_addr} {remote_user} [{time_local}] "{request}" '
+            f'{status} {body_bytes_sent} "{http_referer}" '
+            f'"{http_user_agent}" "{country}" {request_time}'
+        )
         log_dict = {
+            "_msg": raw_message,  # VictoriaLogs standard _msg field
             "remote_addr": remote_addr,
             "remote_user": remote_user,
             "time_local": time_local,
