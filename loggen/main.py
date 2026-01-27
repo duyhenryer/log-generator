@@ -132,8 +132,12 @@ def generate_log_entry(error_rate, output_format, latency=0.0):
             f'{status} {body_bytes_sent} "{http_referer}" '
             f'"{http_user_agent}" "{country}" {request_time}'
         )
+        # Generate _time in RFC3339/ISO8601 UTC format for VictoriaLogs
+        now_utc = datetime.now(timezone.utc)
+        time_iso = now_utc.strftime("%Y-%m-%dT%H:%M:%S.") + f"{now_utc.microsecond // 1000:03d}Z"
         log_dict = {
             "_msg": raw_message,  # VictoriaLogs standard _msg field
+            "_time": time_iso,  # VictoriaLogs standard _time field (RFC3339/ISO8601 UTC)
             "remote_addr": remote_addr,
             "remote_user": remote_user,
             "time_local": time_local,

@@ -2,6 +2,7 @@
 """Tests for loggen module."""
 
 import json
+import re
 import pytest
 from loggen.main import generate_log_entry, pick_error_level, pick_status_code
 
@@ -41,9 +42,9 @@ class TestLoggen:
         parsed = json.loads(log_entry)
         assert isinstance(parsed, dict)
         
-        # Check for expected fields including _msg for VictoriaLogs
+        # Check for expected fields including _msg and _time for VictoriaLogs
         expected_fields = [
-            '_msg', 'remote_addr', 'remote_user', 'time_local', 'request',
+            '_msg', '_time', 'remote_addr', 'remote_user', 'time_local', 'request',
             'status', 'body_bytes_sent', 'http_referer', 
             'http_user_agent', 'country', 'request_time'
         ]
@@ -55,6 +56,12 @@ class TestLoggen:
         assert isinstance(parsed['body_bytes_sent'], int)
         assert isinstance(parsed['request_time'], float)
         assert isinstance(parsed['_msg'], str)
+        assert isinstance(parsed['_time'], str)
+        
+        # Verify _time is in RFC3339/ISO8601 UTC format (e.g., 2026-01-27T18:02:32.823Z)
+        time_pattern = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'
+        assert re.match(time_pattern, parsed['_time']), \
+            f"_time '{parsed['_time']}' does not match RFC3339/ISO8601 UTC format"
         
         # Verify _msg field contains expected log components
         message = parsed['_msg']
