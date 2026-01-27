@@ -45,10 +45,14 @@ log-generator --sleep 1 --latency 0.5 --error-rate 0.3
 10.0.0.123 - [09/Sep/2025:14:30:16 ] "POST /api/orders HTTP/1.1" 201 856 "-" "curl/7.68.0" "CN" 1.234
 ```
 
-**JSON Format:**
+**JSON Format (VictoriaLogs compatible):**
 ```json
-{"remote_addr": "192.168.1.45", "remote_user": "-", "time_local": "09/Sep/2025:14:30:15 ", "request": "GET /api/users HTTP/2", "status": 200, "body_bytes_sent": 1247, "http_referer": "https://github.com/", "http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", "country": "US", "request_time": 0.845}
+{"_msg": "192.168.1.45 - [09/Sep/2025:14:30:15 +0000] \"GET /api/users HTTP/2\" 200 1247 \"https://github.com/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\" \"US\" 0.845", "_time": "2025-09-09T14:30:15.123Z", "remote_addr": "192.168.1.45", "remote_user": "-", "time_local": "09/Sep/2025:14:30:15 +0000", "request": "GET /api/users HTTP/2", "status": 200, "body_bytes_sent": 1247, "http_referer": "https://github.com/", "http_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", "country": "US", "request_time": 0.845}
 ```
+
+The JSON format includes VictoriaLogs standard fields:
+- `_msg`: The complete log message (required by VictoriaLogs)
+- `_time`: RFC3339/ISO8601 UTC timestamp (recommended for accurate log timing)
 
 ## Configuration
 
